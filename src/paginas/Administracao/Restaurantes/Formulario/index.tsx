@@ -1,8 +1,8 @@
 import { Button, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import http from '../../../../http';
 import IRestaurante from '../../../../interfaces/IRestaurante';
 
 const FormularioRestaurante = () => {
@@ -11,8 +11,8 @@ const FormularioRestaurante = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (params.id) {
-      axios
-        .put(`http://localhost:8000/api/v2/restaurantes/${params.id}/`, {
+      http
+        .put(`restaurantes/${params.id}/`, {
           nome: nomeRestaurante,
         })
         .then(() => {
@@ -22,8 +22,8 @@ const FormularioRestaurante = () => {
           console.log(err);
         });
     } else {
-      axios
-        .post('http://localhost:8000/api/v2/restaurantes/', {
+      http
+        .post('restaurantes/', {
           nome: nomeRestaurante,
         })
         .then(() => {
@@ -36,10 +36,8 @@ const FormularioRestaurante = () => {
   };
   useEffect(() => {
     if (params.id) {
-      axios
-        .get<IRestaurante>(
-          `http://localhost:8000/api/v2/restaurantes/${params.id}/`,
-        )
+      http
+        .get<IRestaurante>(`restaurantes/${params.id}/`)
         .then((res) => setNomeRestaurante(res.data.nome))
         .catch((err) => {
           console.log(err);
