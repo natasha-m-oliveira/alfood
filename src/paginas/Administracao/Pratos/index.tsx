@@ -1,5 +1,6 @@
 import {
   Button,
+  Link,
   Paper,
   Table,
   TableBody,
@@ -9,22 +10,20 @@ import {
   TableRow,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import http from '../../../http';
-import IRestaurante from '../../../interfaces/IRestaurante';
+import IPrato from '../../../interfaces/IPrato';
 
-const AdministracaoRestaurantes = () => {
-  const [restaurantes, setRestaurantes] = useState<IRestaurante[]>([]);
-  const excluirRestaurante = (restauranteAhSerExcluido: IRestaurante) => {
+const AdministracaoPratos = () => {
+  const [pratos, setPratos] = useState<IPrato[]>([]);
+  const excluirPrato = (pratoAhSerExcluido: IPrato) => {
     http
-      .delete(`restaurantes/${restauranteAhSerExcluido.id}/`)
+      .delete(`pratos/${pratoAhSerExcluido.id}/`)
       .then(() => {
-        setRestaurantes((restaurantes) =>
-          restaurantes.filter(
-            (restaurante) => restaurante.id !== restauranteAhSerExcluido.id,
-          ),
+        setPratos((pratos) =>
+          pratos.filter((prato) => prato.id !== pratoAhSerExcluido.id),
         );
-        alert('Restaurante excluído com sucesso');
+        alert('Prato excluído com sucesso');
       })
       .catch((err) => {
         console.log(err);
@@ -32,8 +31,8 @@ const AdministracaoRestaurantes = () => {
   };
   useEffect(() => {
     http
-      .get('restaurantes/')
-      .then((res) => setRestaurantes(res.data))
+      .get('pratos/')
+      .then((res) => setPratos(res.data))
       .catch((err) => {
         console.log(err);
       });
@@ -44,26 +43,34 @@ const AdministracaoRestaurantes = () => {
         <TableHead>
           <TableRow>
             <TableCell>Nome</TableCell>
+            <TableCell>Tag</TableCell>
+            <TableCell>Imagem</TableCell>
             <TableCell>Editar</TableCell>
             <TableCell>Excluir</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {restaurantes.map((restaurante) => (
-            <TableRow key={restaurante.id}>
-              <TableCell>{restaurante.nome}</TableCell>
+          {pratos.map((prato) => (
+            <TableRow key={prato.id}>
+              <TableCell>{prato.nome}</TableCell>
+              <TableCell>{prato.tag}</TableCell>
+              <TableCell>
+                <Link href={prato.imagem} target="_blank" rel="noreferrer">
+                  Ver imagem
+                </Link>
+              </TableCell>
               <TableCell>
                 <Button variant="text">
-                  <Link to={`/admin/restaurantes/${restaurante.id}`}>
+                  <RouterLink to={`/admin/pratos/${prato.id}`}>
                     Editar
-                  </Link>
+                  </RouterLink>
                 </Button>
               </TableCell>
               <TableCell>
                 <Button
                   variant="outlined"
                   color="error"
-                  onClick={() => excluirRestaurante(restaurante)}
+                  onClick={() => excluirPrato(prato)}
                 >
                   Excluir
                 </Button>
@@ -76,4 +83,4 @@ const AdministracaoRestaurantes = () => {
   );
 };
 
-export default AdministracaoRestaurantes;
+export default AdministracaoPratos;
